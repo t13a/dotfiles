@@ -47,7 +47,15 @@ then
     tput initc 15 973 973 949
 fi
 
-source ~/.{aliases,exports}
+source ~/.aliases
+source ~/.exports
 
-command -v helm && source <$(helm completion zsh)
-command -v kubectl && source <$(kubectl completion zsh)
+if command -v helm
+then
+    source <$(helm completion zsh)
+fi
+
+if command -v kubectl
+then
+    source <$(kubectl completion zsh)
+fi

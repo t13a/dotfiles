@@ -1,4 +1,12 @@
-source ~/.{aliases,exports}
+source ~/.aliases
+source ~/.exports
 
-command -v helm && source <(helm completion bash)
-command -v kubectl && source <(kubectl completion bash)
+if command -v helm
+then
+    source <$(helm completion bash)
+fi
+
+if command -v kubectl
+then
+    source <$(kubectl completion bash)
+fi
