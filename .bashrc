@@ -1,4 +1,4 @@
-export EDITOR="vim"
-export PATH="$HOME/.local/bin:$PATH"
+source ~/.{aliases,exports}
 
-[ -e /usr/bin/kubectl ] && source <(/usr/bin/kubectl completion bash)
+command -v helm && source <(helm completion bash)
+command -v kubectl && source <(kubectl completion bash)

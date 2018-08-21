@@ -23,10 +23,6 @@ ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} "
 ZSH_THEME_GIT_PROMPT_DIRTY="%{$reset_color%}) %{$fg[yellow]%}○ "
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$reset_color%}) %{$fg[green]%}● "
 
-# Environment variables
-export EDITOR=vim
-export PATH=$HOME/.local/bin:$PATH
-
 # Color scheme
 if [ -n "${COLORTERM:-}" -o "${TERM:-}" = xterm ]
 then
@@ -50,3 +46,8 @@ then
     tput initc 14 631 937 894
     tput initc 15 973 973 949
 fi
+
+source ~/.{aliases,exports}
+
+command -v helm && source <$(helm completion zsh)
+command -v kubectl && source <$(kubectl completion zsh)
