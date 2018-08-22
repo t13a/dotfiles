@@ -53,19 +53,18 @@ endif
 if has('gui_running') || !empty($DISPLAY) && &t_Co >= 256
     set background=dark
     colorscheme molokai
-    highlight Comment ctermfg=244 " more lightrer
-    highlight Delimiter ctermfg=244 " more lighter
-    highlight Cursor guifg=NONE guibg=NONE gui=reverse " same as terminal
-    highlight LineNr ctermfg=238 ctermbg=234 " more darker
-    highlight MatchParen ctermfg=yellow ctermbg=NONE guifg=yellow guibg=NONE
-    highlight Visual ctermbg=236 " more lighter
+    highlight MatchParen ctermfg=208 ctermbg=NONE guifg=#FD971F guibg=NONE
 
-    " Transparent background
-    " if !has('gui_running')
-    "     highlight LineNr ctermbg=NONE
-    "     highlight Normal ctermbg=NONE
-    "     highlight VertSplit ctermbg=NONE
-    " endif
+    " Same as GUI
+    highlight Comment ctermfg=244
+    highlight Delimiter ctermfg=244
+    highlight LineNr ctermfg=240 ctermbg=235
+    highlight Normal ctermfg=255 ctermbg=234
+    highlight Search ctermfg=232
+    highlight Visual ctermbg=237
+
+    " Same as terminal
+    highlight Cursor guifg=NONE guibg=NONE gui=reverse
 endif
 
 
@@ -127,9 +126,7 @@ let NERDTreeShowHidden=1
 map <Leader>nb :NERDTreeFromBookmark
 map <Leader>nf :NERDTreeFind<CR>
 map <Leader>nn :NERDTreeToggle<CR>
-set guifont=Ricty\ Regular\ 11
-set guioptions-=T
-set guioptions-=m
+set ambiwidth=double
 set listchars=eol:$,tab:>-
 set nobackup
 set nojoinspaces
