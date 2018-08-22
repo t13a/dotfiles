@@ -55,17 +55,17 @@ if has('gui_running') || !empty($DISPLAY) && &t_Co >= 256
     colorscheme molokai
     highlight Comment ctermfg=244 " more lightrer
     highlight Delimiter ctermfg=244 " more lighter
-    highlight Cursor guifg=NONE guibg=NONE gui=reverse
-    highlight LineNr ctermfg=244 " same as Comment
+    highlight Cursor guifg=NONE guibg=NONE gui=reverse " same as terminal
+    highlight LineNr ctermfg=238 ctermbg=234 " more darker
     highlight MatchParen ctermfg=yellow ctermbg=NONE guifg=yellow guibg=NONE
     highlight Visual ctermbg=236 " more lighter
 
-    " for CLI
-    if !has('gui_running')
-        highlight LineNr ctermbg=NONE
-        highlight Normal ctermbg=NONE
-        highlight VertSplit ctermbg=NONE
-    endif
+    " Transparent background
+    " if !has('gui_running')
+    "     highlight LineNr ctermbg=NONE
+    "     highlight Normal ctermbg=NONE
+    "     highlight VertSplit ctermbg=NONE
+    " endif
 endif
 
 
