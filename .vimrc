@@ -53,9 +53,12 @@ endif
 if has('gui_running') || !empty($DISPLAY) && &t_Co >= 256
     set background=dark
     colorscheme molokai
-    highlight LineNr ctermfg=darkgrey guifg=darkgrey
-    highlight MatchParen ctermbg=NONE ctermfg=yellow guibg=NONE guifg=yellow
-    highlight Visual ctermbg=darkgrey ctermfg=lightgrey guibg=darkgrey guifg=lightgrey
+    highlight Comment ctermfg=244 " more lightrer
+    highlight Delimiter ctermfg=244 " more lighter
+    highlight Cursor guifg=NONE guibg=NONE gui=reverse
+    highlight LineNr ctermfg=244 " same as Comment
+    highlight MatchParen ctermfg=yellow ctermbg=NONE guifg=yellow guibg=NONE
+    highlight Visual ctermbg=236 " more lighter
 
     " for CLI
     if !has('gui_running')
