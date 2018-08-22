@@ -1,0 +1,13 @@
+[user]
+	name = Tatsuya Kitagawa
+	email = tatsuya.kitagawa@t13a.com
+[gui]
+	spellingdictionary = none
+[core]
+	editor = vim
+[alias]
+	l = log --graph --decorate --oneline --simplify-by-decoration
+[merge]
+	tool = meld
+[secrets]
+	patterns = ^-+BEGIN\\sRSA\\sPRIVATE\\sKEY-+$
