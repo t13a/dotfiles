@@ -1,3 +1,4 @@
-alias e="~/.local/share/eow/eow -c"
+alias e="$HOME/.local/share/eow/eow -c"
 alias g="git"
+alias j="$HOME/.local/share/journal/journal-loop"
 alias t="tmux"
