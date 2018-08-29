@@ -5,7 +5,7 @@ My personal dotfiles.
 ## Bootstrap
 
 ```sh
-$ curl https://git.io/fAGDT | bash
+$ curl -L https://git.io/fAGDT | bash
 ```
 
 ### Bootstrap per programs
