@@ -15,7 +15,7 @@ bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 
 # Prompt
-PROMPT='%~$(git_prompt_info)
+PROMPT='%{$fg_bold[cyan]%}%~%{$reset_color%}$(git_prompt_info)
 %(?.%{$fg_bold[green]%}.%{$fg_bold[red]%})$%{$reset_color%} '
 RPROMPT='%{$fg_bold[red]%}%(?..$?)%{$reset_color%}'
 ZSH_THEME_GIT_PROMPT_PREFIX=" (%{$fg[red]%}"
