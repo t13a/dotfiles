@@ -71,7 +71,6 @@ if has('gui_running') || !empty($DISPLAY) && &t_Co >= 256
     highlight Cursor guifg=NONE guibg=NONE gui=reverse
 endif
 
-
 " Hilight extra whitespace & tab character
 " ref: http://vim.wikia.com/wiki/Highlight_unwanted_spaces
 highlight ExtraWhitespace ctermbg=red guibg=red
