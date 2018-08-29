@@ -1,0 +1,9 @@
+if command -v nm-applet
+then
+    sh -c "sleep 5; nm-applet" &
+fi
+
+if [ -e $HOME/.local/share/synaptics-one-finger/synaptics-one-finger ]
+then
+    sh -c "sleep 5; $HOME/.local/share/synaptics-one-finger/synaptics-one-finger -1" &
+fi
