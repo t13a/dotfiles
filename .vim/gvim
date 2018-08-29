@@ -1,6 +1,0 @@
-#!/bin/sh
-
-VIM_ARGS=(vim -g --servername GVIM)
-[ ${#} -gt 0 ] && VIM_ARGS=("${VIM_ARGS[@]}" --remote-tab "${@}")
-
-exec "${VIM_ARGS[@]}"

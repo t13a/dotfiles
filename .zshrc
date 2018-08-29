@@ -1,6 +1,10 @@
 # Plugins
 ANTIGEN_SOURCE=~/.antigen/antigen.zsh
-[ -e $ANTIGEN_SOURCE ] || curl -L https://git.io/antigen > $ANTIGEN_SOURCE
+if [ ! -e $ANTIGEN_SOURCE ]
+then
+    mkdir -p $(dirname $ANTIGEN_SOURCE)
+    curl -L https://git.io/antigen > $ANTIGEN_SOURCE
+fi
 source $ANTIGEN_SOURCE
 antigen use oh-my-zsh
 antigen bundle zsh-users/zsh-autosuggestions
