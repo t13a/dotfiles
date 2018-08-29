@@ -11,6 +11,7 @@ Plugin 'itchyny/vim-gitbranch' " for itchyny/lightline.vim
 Plugin 'jamessan/vim-gnupg'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
+Plugin 'tpope/vim-surround'
 Plugin 'tmux-plugins/vim-tmux-focus-events'
 Plugin 'tomasr/molokai'
 Plugin 'vim-scripts/fcitx.vim'
