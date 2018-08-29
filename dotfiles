@@ -33,7 +33,6 @@ function help() {
 ${0} [OPTION]... SUBCOMMAND [DOTFILE]...
 
 Options:
-    -f              force install
     -h              show help
     -l              print files
 
@@ -104,9 +103,8 @@ function subcommand_install() {
     }
 
     function install_link() {
-        local dir="$(dirname "${2}")"
-        [ -e "${dir}" ] || mkdir -p "${dir}"
-        [ -e "${2}" ] && rm -f ${FORCE:--i} -r "${2}"
+        mkdir -p "$(dirname "${2}")"
+        rm -rf "${2}"
         ln -sT "${1}" "${2}"
     }
 
@@ -154,14 +152,9 @@ function target_expect() {
     "${DOTFILES_ROOT}/${1}"
 }
 
-unset FORCE
-
-while getopts 'fhl' OPT
+while getopts 'hl' OPT
 do
     case "${OPT}" in
-        f)
-            FORCE=yes
-            ;;
         h)
             help
             exit 0
