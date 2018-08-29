@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env sh
 
 set -euo pipefail
 
@@ -10,7 +10,12 @@ function git_pull() {
 
     if [ -e "${dir}" ]
     then
-        run_or_dry_run git --work-tree="${dir}" pull
+        run_or_dry_run \
+        git \
+        --git-dir="${dir}/.git" \
+        --work-tree="${dir}" \
+        pull \
+        --no-commit
     else
         [ -e "${parent_dir}" ] || run_or_dry_run mkdir -p "${parent_dir}"
         run_or_dry_run git clone -b "${branch}" "${repo}" "${dir}"
