@@ -80,6 +80,7 @@ shift $((OPTIND - 1))
 git_pull t13a/dotfiles
 git_pull t13a/eow
 git_pull t13a/synaptics-one-finger
+git_pull t13a/thinkpad-rotate-screen
 git_pull VundleVim/Vundle.vim master ${HOME}/.vim/bundle/Vundle.vim
 git_pull tmux-plugins/tpm master ${HOME}/.tmux/plugins/tpm
 
