@@ -127,6 +127,10 @@ if has('gui_running') || !empty($DISPLAY)
     set clipboard=unnamedplus
 endif
 
+" Search for visually selected text
+" ref: http://vim.wikia.com/wiki/Search_for_visually_selected_text
+vnoremap // y/\V<C-r>=escape(@",'/\')<CR><CR>
+
 " Miscellaneous
 let g:GPGPreferArmor=1
 let NERDSpaceDelims=1
