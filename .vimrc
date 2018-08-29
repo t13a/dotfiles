@@ -5,6 +5,7 @@ set runtimepath+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'airblade/vim-gitgutter'
+Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'guns/xterm-color-table.vim'
 Plugin 'itchyny/vim-gitbranch'
 Plugin 'jamessan/vim-gnupg'
@@ -59,6 +60,7 @@ if has('gui_running') || !empty($DISPLAY) && &t_Co >= 256
 
     " Same as GUI
     highlight Comment ctermfg=244
+    highlight CursorLine ctermbg=237
     highlight Delimiter ctermfg=244
     highlight LineNr ctermfg=240 ctermbg=235
     highlight Normal ctermfg=255 ctermbg=234
