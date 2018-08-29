@@ -7,7 +7,7 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'guns/xterm-color-table.vim'
-Plugin 'itchyny/vim-gitbranch'
+Plugin 'itchyny/vim-gitbranch' " for itchyny/lightline.vim
 Plugin 'jamessan/vim-gnupg'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
