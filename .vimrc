@@ -9,6 +9,7 @@ Plugin 'guns/xterm-color-table.vim'
 Plugin 'itchyny/vim-gitbranch'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
+Plugin 'tmux-plugins/vim-tmux-focus-events'
 Plugin 'tomasr/molokai'
 Plugin 'vim-scripts/fcitx.vim'
 if has('gui_running') || !empty($DISPLAY) && &t_Co >= 256
@@ -91,6 +92,9 @@ autocmd BufWinLeave * call clearmatches()
 " FFE8-FFEE: Halfwidth symbol variants
 autocmd BufRead,BufNew * match ConfusingCharacters /[\u3000\uff01-\uff5e\uff65-\uff9f\uffe0-\uffe6\uffe8-\uffee]/
 highlight ConfusingCharacters ctermfg=black ctermbg=darkgreen guifg=black guibg=darkgreen
+
+" ref: https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/149214
+autocmd FocusGained,BufEnter * :checktime
 
 " Move cursor by screen line
 :noremap <Up> gk
