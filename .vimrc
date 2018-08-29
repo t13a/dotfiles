@@ -7,6 +7,7 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'guns/xterm-color-table.vim'
 Plugin 'itchyny/vim-gitbranch'
+Plugin 'jamessan/vim-gnupg'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
 Plugin 'tmux-plugins/vim-tmux-focus-events'
@@ -125,6 +126,7 @@ if has('gui_running') || !empty($DISPLAY)
 endif
 
 " Miscellaneous
+let g:GPGPreferArmor=1
 let NERDSpaceDelims=1
 let NERDTreeShowHidden=1
 map <Leader>nb :NERDTreeFromBookmark
