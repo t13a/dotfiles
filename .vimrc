@@ -9,6 +9,7 @@ Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'guns/xterm-color-table.vim'
 Plugin 'itchyny/vim-gitbranch' " for itchyny/lightline.vim
 Plugin 'jamessan/vim-gnupg'
+Plugin 'junegunn/fzf.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-surround'
