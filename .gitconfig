@@ -5,6 +5,7 @@
 	spellingdictionary = none
 [core]
 	editor = vim
+	quotepath = off
 [alias]
 	l = log --graph --decorate --oneline --simplify-by-decoration
 [merge]
