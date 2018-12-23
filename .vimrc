@@ -6,6 +6,7 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'google/vim-jsonnet'
 Plugin 'guns/xterm-color-table.vim'
 Plugin 'itchyny/vim-gitbranch' " for itchyny/lightline.vim
 Plugin 'jamessan/vim-gnupg'
