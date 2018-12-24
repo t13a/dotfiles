@@ -102,7 +102,7 @@ subcommand_stow() {
 function subcommand_sync() {
     subcommand_stow -D
     subcommand_git pull
-    exec "${BASH_SOURCE[0]}" init
+    exec "${BASH_SOURCE[0]}" init "${@}"
 }
 
 while getopts 'h' OPT
