@@ -26,6 +26,6 @@ $ dotfiles git push origin
 
 ### Pull changes (experimental)
 
-``sh
+```sh
 $ dotfiles sync
-``
+```
