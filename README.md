@@ -8,13 +8,19 @@ My personal dotfiles.
 - `git`
 - `stow`
 
-## Bootstrap
+## Usage
+
+### Bootstrap
 
 ```sh
 $ curl -L https://git.io/fAGDT | bash
 ```
 
-## Usage
+or
+
+```sh
+$ curl -L https://raw.githubusercontent.com/t13a/dotfiles/master/bootstrap | bash
+```
 
 ### Push changes
 
