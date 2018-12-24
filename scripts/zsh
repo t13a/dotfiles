@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+ANTIGEN_URL="https://git.io/antigen"
+ANTIGEN_DIR="${HOME}/.antigen"
+ANTIGEN_OUT="${ANTIGEN_DIR}/antigen.zsh"
+ANTIGEN_PART="${ANTIGEN_OUT}.part"
+ZSH_RC="${HOME}/.zshrc"
+
+mkdir -p "${ANTIGEN_DIR}"
+curl -L "${ANTIGEN_URL}" -o "${ANTIGEN_PART}"
+
+if [ ! -e "${ANTIGEN_OUT}" ] || ! diff -q "${ANTIGEN_OUT}" "${ANTIGEN_PART}"
+then
+    mv -fv "${ANTIGEN_PART}" "${ANTIGEN_OUT}"
+else
+    rm -fv "${ANTIGEN_PART}"
+fi
+
+zsh -c "source '${ZSH_RC}'"

@@ -2,30 +2,30 @@
 
 My personal dotfiles.
 
+## Prerequisites
+
+- `bash`
+- `git`
+- `stow`
+
 ## Bootstrap
 
 ```sh
 $ curl -L https://git.io/fAGDT | bash
 ```
 
-### Bootstrap per programs
+## Usage
 
-Tmux:
-
-```sh
-$ tmux run-shell $HOME/.tmux/plugins/tpm/bindings/install_plugins
-```
-
-or press`^Space-I` in tmux.
-
-Vim:
+### Push changes
 
 ```sh
-$ vim -c VundleInstall
+$ dotfiles git add FILE...
+$ dotfiles git commit -m MESSAGE
+$ dotfiles git push origin
 ```
 
-Zsh:
+### Pull changes (experimental)
 
-```
-$ zsh
-```
+``sh
+$ dotfiles sync
+``

@@ -1,2 +1,3 @@
+alias dotfiles="$HOME/.local/share/dotfiles/dotfiles"
 alias e="$HOME/.local/share/eow/eow -c"
 alias j="$HOME/.local/share/journal/journal-loop"

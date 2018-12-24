@@ -1,166 +1,114 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 
-source "${BASH_SOURCE[0]}.conf"
+source "$(dirname "${BASH_SOURCE[0]}")/dotfiles.conf"
 
-function dest() {
-    echo "${HOME}/${1}"
-}
-
-function echo_fail() {
-    echo -e '[\033[1;31mFAIL\e[0m]' "${@}"
-}
-
-function echo_pass() {
-    echo -e '[\033[1;32mPASS\e[0m]' "${@}"
-}
-
-function for_each() {
-    local ret=0
-    local file
-
-    while read file
-    do
-        "${1}" "${file}" || ret=1
-    done <<< "$(list "${@:2}")"
-
-    return $ret
+function fail() {
+    echo -e "${FAIL_PREFIX}" "${@}" >&2
+    return 1
 }
 
 function help() {
     cat << EOF
-${0} [OPTION]... SUBCOMMAND [DOTFILE]...
+${0} [OPTION]... [SUBCOMMAND] [ARG]...
 
 Options:
-    -h              show help
-    -l              print files
+    -h                    show help
 
 Subcommands:
-    install         install
-    status          show status
-    uninstall       uninstall
+    git [ARG]...          manage repository
+    init [CMD]...         initialize dotfiles
+    stow [ARG]...         stow files
+    sync [CMD]...         synchronize dotfiles (experimental)
 EOF
 }
 
-function list() {
-    local file
-    local files
+function pass() {
+    echo -e "${PASS_PREFIX}" "${@}" >&2
+    return 0
+}
 
-    if [ $# -gt 0 ]
-    then
-        files=("${@}")
-    else
-        files=("${DOTFILES[@]}")
-    fi
+function subcommand_git() {
+    local work_tree="$(dirname "${BASH_SOURCE[0]}")"
+    local git_dir="${work_tree}/.git"
+    git --git-dir="${git_dir}" --work-tree="${work_tree}" "${@}"
+}
 
-    for file in "${files[@]}"
+function subcommand_init() {
+    subcommand_stow
+    subcommand_init_cmd "${@}"
+}
+
+function subcommand_init_cmd() {
+
+    function list() {
+        if [ ${#@} -gt 0 ]
+        then
+            for basename in "${@}"
+            do
+                echo "${basename}"
+            done
+        else
+            ls "${script_dir}"
+        fi
+    }
+
+    local script_dir="$(dirname "${BASH_SOURCE[0]}")/${SCRIPT_DIR}"
+
+    for cmd in $(list "${@}")
     do
-        echo "${file}"
+        local script="${script_dir}/${cmd}"
+
+        if [ ! -x "${script}" ]
+        then
+            fail "init: ${cmd}: script not found"
+        elif ! command -v "${cmd}" > /dev/null
+        then
+            fail "init: ${cmd}: command not found" || continue
+        fi
+
+        if "${script}"
+        then
+            pass "init: ${cmd}: done"
+        else
+            fail "init: ${cmd}: failed"
+        fi
     done
 }
 
-function status() {
-    local dest="$(dest "${1}")"
-    local target_actual="$(target_actual "${1}")"
-    local target_expect="$(target_expect "${1}")"
+subcommand_stow() {
+    local directory="$(dirname "${BASH_SOURCE[0]}")"
+    local args=(
+        stow
+        -d "$(dirname "${directory}")"
+        -t "${HOME}"
+        --ignore="${STOW_IGNORE_REGEX}"
+        --override="${STOW_OVERRIDE_REGEX}"
+        -v
+        "${@}"
+        "$(basename "${directory}")"
+    )
 
-    if [ ! -e "${dest}" ]
+    if "${args[@]}"
     then
-        echo_fail "${1}: not installed"
-        return 1
-    elif [ ! -L "${dest}" ]
-    then
-        echo_fail "${1}: file exists"
-        return 2
-    elif [ "${target_actual}" != "${target_expect}" ]
-    then
-        echo_fail "${1}: link exists: ${target_actual}"
-        return 2
+        pass "stow: done"
     else
-        echo_pass "${1}: installed"
-        return 0
+        fail "stow: failed"
     fi
 }
 
-function subcommand_install() {
-    function f() {
-        local dest="$(dest "${1}")"
-        local target_expect="$(target_expect "${1}")"
-
-        if status "${1}" > /dev/null
-        then
-            echo_pass "${1}"
-            return 0
-        elif install_link "${target_expect}" "${dest}"
-        then
-            echo_pass "${1}: installed"
-            return 0
-        else
-            echo_fail "${1}"
-            return 1
-        fi
-    }
-
-    function install_link() {
-        mkdir -p "$(dirname "${2}")"
-        rm -rf "${2}"
-        ln -sT "${1}" "${2}"
-    }
-
-    for_each f "${@}"
+function subcommand_sync() {
+    subcommand_stow -D
+    subcommand_git pull
+    exec "${BASH_SOURCE[0]}" init
 }
 
-function subcommand_status() {
-    for_each status "${@}"
-}
-
-function subcommand_uninstall() {
-    function f() {
-        local dest="$(dest "${1}")"
-
-        if [ ! -e "${dest}" ]
-        then
-            echo_pass "${1}"
-            return 0
-        elif status "${1}" > /dev/null
-        then
-            if rm "${dest}"
-            then
-                echo_pass "${1}: uninstalled"
-                return 0
-            else
-                echo_fail "${1}"
-                return 1
-            fi
-        else
-            echo_fail "${1}: could not uninstall"
-            return 1
-        fi
-    }
-
-    for_each f "${@}"
-}
-
-function target_actual() {
-    readlink "$(dest "${1}")"
-}
-
-function target_expect() {
-    realpath \
-    --relative-to="$(dirname "$(dest "${1}")")" \
-    "${DOTFILES_ROOT}/${1}"
-}
-
-while getopts 'hl' OPT
+while getopts 'h' OPT
 do
     case "${OPT}" in
         h)
             help
-            exit 0
-            ;;
-        l)
-            list
             exit 0
             ;;
     esac
@@ -168,4 +116,4 @@ done
 
 shift $((OPTIND - 1))
 
-"subcommand_${1//-/_}" "${@:2}"
+"subcommand_${1/-/_}" "${@:2}"

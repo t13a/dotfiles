@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+TMUX_CONF="${HOME}/.tmux.conf"
+TPM_REPOSITORY=https://github.com/tmux-plugins/tpm
+TPM_DIR="${HOME}/.tmux/plugins/tpm"
+TPM_BIN="${TPM_DIR}/bindings/install_plugins"
+
+mkdir -p "${TPM_DIR}"
+[ -e "${TPM_DIR}/.git" ] || git clone "${TPM_REPOSITORY}" "${TPM_DIR}"
+tmux start-server \; source "${TMUX_CONF}" \; run-shell "${TPM_BIN}"
