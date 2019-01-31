@@ -6,6 +6,7 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'fatih/vim-go'
 Plugin 'google/vim-jsonnet'
 Plugin 'guns/xterm-color-table.vim'
 Plugin 'itchyny/vim-gitbranch' " for itchyny/lightline.vim
@@ -137,6 +138,11 @@ endif
 " Search for visually selected text
 " ref: http://vim.wikia.com/wiki/Search_for_visually_selected_text
 vnoremap // y/\V<C-r>=escape(@",'/\')<CR><CR>
+
+" QuickFix
+map <C-n> :cnext<CR>
+map <C-m> :cprevious<CR>
+nnoremap <leader>a :cclose<CR>
 
 " Miscellaneous
 let g:GPGPreferArmor=1
