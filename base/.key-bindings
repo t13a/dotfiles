@@ -137,5 +137,5 @@ bindkey "^P" fzf-custom-widget-ps
 bindkey "^S" fzf-custom-widget-git-status
 bindkey "^W" fzf-custom-widget-git-log
 bindkey "^Z" fzf-custom-widget-z
-bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
+bindkey "$terminfo[kcuu1]" history-substring-search-up

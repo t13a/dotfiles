@@ -1,8 +1,10 @@
 FROM archlinux/base
 
 RUN pacman -Syu --noconfirm \
+    awk \
     bash \
     fd \
+    file \
     fzf \
     git \
     make \
