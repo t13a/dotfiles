@@ -9,7 +9,16 @@
 	editor = vim
 	quotepath = off
 [alias]
-	l = log --graph --decorate --oneline --simplify-by-decoration
+	a = add
+	b = branch
+	c = commit
+	co = checkout
+	d = diff
+	l = log
+	r = reset
+	s = status
+	t = tag
+	y = stash
 [merge]
 	tool = meld
 [secrets]

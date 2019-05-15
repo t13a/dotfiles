@@ -1,0 +1,141 @@
+fzf-custom-widget() {
+    __escape() {
+        local item
+        while read item
+        do
+            echo -n "${(q)item} "
+        done
+    }
+
+    __select() {
+        setopt localoptions pipefail 2> /dev/null
+        eval "${src_cmd}; return 0" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse ${FZF_DEFAULT_OPTS}" $(__fzfcmd) "${fzf_args[@]}"
+    }
+
+    setopt localoptions pipefail 2> /dev/null
+
+    local src_cmd="${1}"
+    local out_cmd="${2:-}"
+    local fzf_args=("${@:3}")
+    local items
+
+    if items="$(__select)"
+    then
+        LBUFFER="${LBUFFER}$(echo "${items}" | eval "${out_cmd} ${out_cmd:+|} __escape")"
+    fi
+    zle reset-prompt
+}
+
+fzf-custom-widget-ghq-list() {
+    fzf-custom-widget 'ghq list' 'sed "s|^|$(ghq root)/|g"' \
+    --height '80%' \
+    --multi \
+    --preview 'cd "$(ghq root)"/{}; git -c color.status=always status --short --branch' \
+    --preview-window 'down:50%'
+}
+
+fzf-custom-widget-git-log() {
+    src() {
+        git log \
+        --graph \
+        --color=always \
+        --format='%C(auto)%h%d %s %C(black)%C(bold)%cr'
+    }
+
+    out() {
+        sed -E 's/^[^0-9a-f]+([0-9a-f]+).+$/\1/g'
+    }
+
+    git rev-parse --git-dir >/dev/null 2>&1 || return 1
+
+    fzf-custom-widget src out \
+    --height '80%' \
+    --no-sort \
+    --multi \
+    --preview '
+ref="$(echo {} | grep "[0-9a-f]" | sed -E "s/^[^0-9a-f]+([0-9a-f]+).+$/\1/g")"
+[ -n "${ref}" ] && git show --abbrev-commit --format=short --stat --color=always "${ref}" | tail -n+2
+' \
+    --preview-window 'down:50%' \
+    --ansi
+}
+
+fzf-custom-widget-git-refs() {
+    src() {
+        git for-each-ref --format='%(refname:short)' --color=always
+    }
+
+    git rev-parse --git-dir >/dev/null 2>&1 || return 1
+
+    fzf-custom-widget src '' \
+    --height '80%' \
+    --multi \
+    --preview 'git show --abbrev-commit --format=short --stat --color=always {}' \
+    --preview-window 'down:50%'
+
+    #--preview 'git log --graph --color=always {} --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"' \
+}
+
+fzf-custom-widget-git-status() {
+    src() {
+        git -c color.status=always status --short --branch
+    }
+
+    out() {
+        sed -E 's/^ *[^ ]+ +//g'
+    }
+
+    git rev-parse --git-dir >/dev/null 2>&1 || return 1
+
+    fzf-custom-widget src out \
+    --height '80%' \
+    --no-sort \
+    --multi \
+    --preview 'echo {} | sed -E "s/^ *[^ ]+ +//g" | xargs git diff --cached --unified=0 --color=always -- | tail -n+5' \
+    --header-lines=1 \
+    --ansi
+}
+
+fzf-custom-widget-ps() {
+    src() {
+        ps aux
+    }
+
+    out() {
+        sed -E 's/ +/ /g' | cut -d' ' -f2
+    }
+
+    fzf-custom-widget src out \
+    --height '80%' \
+    --no-sort \
+    --multi \
+    --header-lines=1
+}
+
+fzf-custom-widget-z() {
+    src() {
+        z
+    }
+
+    out() {
+        sed -E 's/^[0-9.]+\s+//g'
+    }
+
+    fzf-custom-widget src out
+}
+
+zle -N fzf-custom-widget-ghq-list
+zle -N fzf-custom-widget-git-log
+zle -N fzf-custom-widget-git-refs
+zle -N fzf-custom-widget-git-status
+zle -N fzf-custom-widget-ps
+zle -N fzf-custom-widget-z
+
+bindkey "^E" fzf-custom-widget-git-refs
+bindkey "^Q" fzf-custom-widget-ghq-list
+bindkey "^P" fzf-custom-widget-ps
+bindkey "^S" fzf-custom-widget-git-status
+bindkey "^W" fzf-custom-widget-git-log
+bindkey "^Z" fzf-custom-widget-z
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down

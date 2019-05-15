@@ -1,0 +1,114 @@
+#!/bin/bash
+
+set -euo pipefail
+
+MODE="${1}"
+
+MOVE='$move'
+RESIZE='$resize'
+
+case "${MODE}" in
+    default)
+        NEXT='$move'
+        ;;
+    move)
+        MOVE='"default"'
+        NEXT='$resize'
+        ;;
+    resize)
+        NEXT='"default"'
+        RESIZE='"default"'
+        ;;
+    *)
+        echo "${MODE}: invalid mode" >&2
+        return 1
+        ;;
+esac
+
+cat << EOF
+# Power
+bindsym XF86PowerOff exec --no-startup-id systemctl suspend
+bindsym XF86Sleep exec --no-startup-id systemctl suspend
+
+# Audio
+# bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle
+# bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute 1 toggle
+# bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5%
+# bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5%
+# bindsym XF86AudioMute exec --no-startup-id amixer -D pulse set Master toggle
+bindsym XF86AudioMicMute exec --no-startup-id amixer -D pulse set Captrue toggle
+# bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -D pulse sset Master 5%+ unmute
+# bindsym XF86AudioLowerVolume exec --no-startup-id amixer -D pulse sset Master 5%- unmute
+
+# Media
+bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
+bindsym XF86AudioPause exec --no-startup-id playerctl pause
+bindsym XF86AudioStop exec --no-startup-id playerctl stop
+bindsym XF86AudioPrev exec --no-startup-id playerctl prev
+bindsym XF86AudioNext exec --no-startup-id playerctl next
+
+# Brightness
+bindsym XF86MonBrightnessUp exec --no-startup-id xbacklight -inc 10 -time 0
+bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -dec 10 -time 0
+
+# PrtSc
+bindsym Print exec --no-startup-id \$dropdown_command show
+
+# Ctrl+Alt
+bindsym Ctrl+Mod1+BackSpace exec --no-startup-id i3-nagbar \\
+        -t warning \\
+        -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' \\
+        -B 'Suspend' 'systemctl suspend' \\
+        -B 'Reboot' 'systemctl reboot' \\
+        -B 'Power off' 'systemctl poweroff' \\
+        -B 'Lock' '~/.local/bin/i3lock' \\
+        -B 'Exit' 'i3-msg exit' \\
+        -f 'pango:Noto Sans CJK JP Bold 12'
+bindsym Ctrl+Mod1+r restart
+bindsym Ctrl+Mod1+u exec --no-startup-id ~/.local/bin/i3-config-update
+bindsym Ctrl+Mod1+c reload
+bindsym Ctrl+Mod1+space exec --no-startup-id ~/.local/share/synaptics-one-finger/synaptics-one-finger -t
+
+# Super
+# bindcode --release \$superlcode exec --no-startup-id rofi -show drun
+# bindcode --release \$superrcode exec --no-startup-id rofi -show drun
+bindcode --release \$superlcode mode ${NEXT}
+bindcode --release \$superrcode mode ${NEXT}
+bindsym \$super+Print exec --no-startup-id gnome-screenshot -i
+bindsym \$super+minus \\
+        resize shrink width 100 px or 10 ppt, \\
+        resize shrink height 100 px or 10 ppt
+bindsym \$super+equal \\
+        resize grow height 100 px or 10 ppt, \\
+        resize grow width 100 px or 10 ppt
+bindsym \$super+q kill
+bindsym \$super+w layout tabbed
+bindsym \$super+e layout toggle split
+bindsym \$super+r mode ${RESIZE}
+bindsym \$super+t sticky toggle
+bindsym \$super+o focus parent
+bindsym \$super+i focus child
+bindsym \$super+s layout stacking
+bindsym \$super+d exec --no-startup-id rofi -show drun
+bindsym \$super+f fullscreen toggle
+bindsym \$super+g split toggle
+bindsym \$super+h focus left
+bindsym \$super+j focus down
+bindsym \$super+k focus up
+bindsym \$super+l focus right
+bindsym \$super+Return exec \$terminal
+bindsym \$super+c split horizontal
+bindsym \$super+v split vertical
+bindsym \$super+b exec --no-startup-id ~/.local/bin/i3-dynamic workspace prev
+bindsym \$super+n exec --no-startup-id ~/.local/bin/i3-dynamic workspace next
+# bindsym \$super+m exec gnome-system-monitor
+bindsym \$super+m mode ${MOVE}
+bindsym \$super+space focus mode_toggle
+bindsym \$super+Left focus left
+bindsym \$super+Down focus down
+bindsym \$super+Up focus up
+bindsym \$super+Right focus right
+
+# Shift
+bindsym Shift+Print exec --no-startup-id \$dropdown_command resize
+EOF

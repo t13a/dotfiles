@@ -1,0 +1,53 @@
+[global]
+    follow = mouse
+    geometry = "480x10-8+40"
+    centering = horizontal # currently not merged
+    transparency = 10
+    separator_height = 1
+    padding = 20
+    horizontal_padding = 20
+    frame_width = 0
+    separator_color = frame
+    sort = false
+    idle_threshold = 10
+    font = Noto Sans CJK JP 12
+    markup = full
+    format = "<b>%s</b>\n%b"
+    show_age_threshold = 60
+    word_wrap = true
+    icon_position = left
+    max_icon_size = 48
+    icon_path = /usr/share/icons/Papirus-Dark/48x48/apps/:/usr/share/icons/Papirus-Dark/48x48/categories/:/usr/share/icons/Papirus-Dark/48x48/devices/:/usr/share/icons/Papirus-Dark/48x48/places/:/usr/share/icons/Papirus-Dark/48x48/status/
+    dmenu = /usr/bin/rofi -dmenu -p dunst:
+    browser = /usr/bin/xdg-open
+    startup_notification = true
+
+[experimental]
+    per_monitor_dpi = false
+
+[shortcuts]
+    close = ctrl+mod1+Next
+    close_all = ctrl+mod1+End
+    history = ctrl+mod1+Prior
+    context = ctrl+mod1+Return
+
+[urgency_low]
+    background = "#2f3d44"
+    foreground = "#cbd8dc"
+    frame_color = "#4d5a60"
+    timeout = 10
+
+[urgency_normal]
+    background = "#009688"
+    foreground = "#ffffff"
+    frame_color = "#4db6ac"
+    timeout = 60
+
+[urgency_critical]
+    background = "#ff5252"
+    foreground = "#ffffff"
+    frame_color = "#ff6c6c"
+    timeout = 0
+
+[fullscreen_delay_everything]
+    fullscreen = pushback

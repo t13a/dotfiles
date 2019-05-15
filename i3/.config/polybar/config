@@ -1,0 +1,191 @@
+[colors]
+bg = #000000
+fg = #ffffff
+primary_bg = ${xrdb:t13a.primary_bg:#00ff00}
+primary_fg = ${xrdb:t13a.primary_fg:#ffffff}
+secondary_bg = ${xrdb:t13a.secondary_bg:#888888}
+secondary_fg = ${xrdb:t13a.secondary_fg:#ffffff}
+info_bg = ${xrdb:t13a.info_bg:#00ff00}
+info_fg = ${xrdb:t13a.info_fg:#ffffff}
+warn_bg = ${xrdb:t13a.warn_bg:#ff0000}
+warn_fg = ${xrdb:t13a.warn_fg:#ffffff}
+
+[settings]
+screenchange-reload = true
+
+[global/wm]
+margin-top = 0
+margin-bottom = 0
+
+[bar/status]
+# override-redirect = true
+fixed-center = true
+width = 100%
+height = 32
+background = ${colors.bg}
+foreground = ${colors.fg}
+module-margin = 3
+font-0 = NotoSans:size=12:weight=bold;2
+font-1 = NotoSans:size=14:weight=bold;2
+font-2 = MaterialIcons:size=14;4
+font-3 = MaterialIcons:size=14;4
+font-4 = FontAwesome5FreeSolid:size=12;3
+# modules-left = text i3
+modules-left = text xworkspaces
+modules-center = date
+# modules-right = pulseaudio backlight battery0 battery1 temperature checkupdates
+modules-right = battery0 battery1 temperature checkupdates
+tray-position = right
+tray-maxsize = 24
+tray-padding = 12
+# wm-restack = i3
+click-left = xdotool key Super+m
+click-right = xdotool key Super+r
+# XXX workaround for multi monitor
+# scroll-up = i3wm-wsprev
+# scroll-down = i3wm-wsnext
+scroll-up = xdotool key Super+b
+scroll-down = xdotool key Super+n
+
+[module/text]
+type = custom/text
+content-prefix = "      "
+content = ""
+# content-font = 5
+click-left = xdotool key Super+d
+
+[module/xworkspaces]
+type = internal/xworkspaces
+
+[module/i3]
+type = internal/i3
+strip-wsnumbers = true
+index-sort = true
+# XXX workaround for multi monitor
+enable-scroll = false
+scroll-up = xdotool key Super+b
+scroll-down = xdotool key Super+n
+ws-icon-default = ""
+ws-icon-font = 3
+format = <label-state>   <label-mode>
+
+label-focused = %icon%
+label-focused-foreground = ${colors.info_bg}
+label-focused-padding = 1
+label-unfocused = %icon%
+label-unfocused-foreground = ${colors.secondary_bg}
+label-unfocused-padding = ${self.label-focused-padding}
+label-visible = %icon%
+label-visible-foreground = ${self.label-unfocused-foreground}
+label-visible-padding = ${self.label-unfocused-padding}
+label-urgent = %icon%
+label-urgent-foreground = ${colors.warn_bg}
+label-urgent-padding = ${self.label-unfocused-padding}
+
+# label-focused = %index%
+# label-focused-background = ${colors.info_bg}
+# label-focused-forekground = ${colors.info_fg}
+# label-focused-padding = ${self.label-mode-padding}
+# label-unfocused = %index%
+# label-unfocused-background = ${colors.secondary_bg}
+# label-unfocused-forekground = ${colors.secondary_fg}
+# label-unfocused-padding = ${self.label-focused-padding}
+# label-visible = %inxex%
+# label-visible-background = ${self.label-unfocused-background}
+# label-visible-forekground = ${self.label-unfocused-background}
+# label-visible-padding = ${self.label-unfocused-padding}
+# label-urgent = %index%
+# label-urgent-background = ${colors.warn_bg}
+# label-urgent-forekground = ${colors.warn_fg}
+# label-urgent-padding = ${self.label-unfocused-padding}
+
+label-mode = %mode%
+label-mode-background = ${colors.primary_bg}
+label-mode-font = 2
+label-mode-foreground = ${colors.primary_fg}
+label-mode-padding = 4
+
+[module/date]
+type = internal/date
+interval = 1
+date = %b %e
+time = %H:%M:%S
+label = %date% %time%
+
+[module/alsa]
+type = internal/alsa
+interval = 5
+format-volume = <ramp-volume> <label-volume>
+ramp-volume-0 = ""
+ramp-volume-font = 4
+ramp-headphones-0 = ""
+ramp-headphones-font = 4
+label-volume = %percentage%%
+label-muted = ""
+label-muted-font = 4
+
+[module/pulseaudio]
+inherit = module/alsa
+type = internal/pulseaudio
+
+[module/xbacklight]
+type = internal/xbacklight
+format = <ramp><label>
+ramp-0 = " "
+ramp-font = 4
+label = %percentage%%
+
+[module/backlight]
+inherit = module/xbacklight
+type = internal/backlight
+card = intel_backlight
+
+[module/battery0]
+type = internal/battery
+full-at = 99
+battery = BAT0
+adapter = AC
+format-charging = <animation-charging><label-charging>
+format-discharging = <ramp-capacity><label-discharging>
+format-full = <ramp-capacity><label-full>
+animation-charging-0 = ""
+animation-charging-font = 4
+ramp-capacity-0 = ""
+ramp-capacity-font = 4
+# ramp-capacity-0 = ""
+# ramp-capacity-1 = ""
+# ramp-capacity-2 = ""
+# ramp-capacity-3 = ""
+# ramp-capacity-4 = ""
+# ramp-capacity-font = 5
+label-charging = %percentage%%
+label-discharging = %percentage%%
+label-full = %percentage%%
+
+[module/battery1]
+inherit = module/battery0
+battery = BAT1
+
+[module/temperature]
+type = internal/temperature
+thermal-zone = 0
+warn-temperature = 90
+format = <ramp> <label>
+format-warn = <ramp> <label-warn>
+label = %temperature-c%
+label-warn = %temperature-c%
+label-warn-foreground = ${colors.warn_bg}
+ramp-0 = ""
+ramp-1 = ""
+ramp-2 = ""
+ramp-3 = ""
+ramp-4 = ""
+ramp-font = 5
+
+[module/checkupdates]
+type = custom/script
+exec = if lines="$(checkupdates)"; then echo "${lines}" | wc -l; else echo 'N/A'; fi
+tail = true
+interval = 3600
+format-prefix = " "
+format-prefix-font = 4

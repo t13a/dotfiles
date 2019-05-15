@@ -1,0 +1,5 @@
+alias g="git"
+alias gg="git gui"
+alias gk="gitk --all"
+alias r=". ranger"
+alias t="tig"

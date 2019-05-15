@@ -1,0 +1,216 @@
+#!/bin/bash
+
+set -euo pipefail
+
+function indent() {
+  sed 's/^\(.\)/        \1/g'
+}
+
+PATH="$(dirname "${BASH_SOURCE[0]}"):${PATH}"
+
+cat << EOF
+set \$button2_command kill, mode "default"
+set \$dropdown_command ~/.local/bin/i3-dropdown -x 'gnome-terminal --role i3-dropdown --profile i3-dropdown' -r i3-dropdown -m '32,0,0,0' -p bottom
+set \$border_width 4
+set \$move "MOVE"
+set \$resize "RESIZE"
+set \$super Mod4
+set \$superlcode 133
+set \$superrcode 134
+set \$terminal xfce4-terminal
+
+set_from_resource \$bg t13a.bg #888888
+set_from_resource \$fg t13a.fg #ffffff
+set_from_resource \$f_bg t13a.info_bg #00ff00
+set_from_resource \$f_fg t13a.info_fg #ffffff
+set_from_resource \$u_bg t13a.warn_bg #ff0000
+set_from_resource \$u_fg t13a.warn_fg #ffffff
+
+default_border normal \$border_width
+default_floating_border normal \$border_width
+floating_modifier Mod1
+focus_follows_mouse no
+font pango:Noto Sans CJK JP Bold 12
+hide_edge_borders smart
+title_align center
+
+# i3-gaps
+# gaps inner 24
+# smart_borders on
+# smart_gaps on
+
+for_window [class=".*"] border normal \$border_width
+for_window [window_type="splash"] border none
+
+for_window [class="^Arandr"] floating enable
+for_window [class="^Firefox" instance="^Navigator"] border pixel \$border_width
+for_window [class="^Firefox" instance="^(?!Navigator)"] floating enable
+for_window [class="^Gajim"] floating enable, sticky enable
+for_window [class="^IceCat" instance="^Navigator"] border pixel \$border_width
+for_window [class="^IceCat" instance="^(?!Navigator)"] floating enable
+for_window [class="^Nitrogen"] floating enable
+for_window [window_role="^i3-dropdown"]move scratchpad, sticky enable, border none
+
+exec_always --no-startup-id \\
+        ~/.screenlayout/default.sh && \\
+        nitrogen --restore && \\
+        compton -b
+exec_always --no-startup-id ~/.local/bin/killall-and-exec polybar status
+exec_always --no-startup-id ~/.local/bin/killall-and-exec volumeicon
+exec_always --no-startup-id dunst
+exec_always --no-startup-id thunar --daemon
+exec_always --no-startup-id xfce4-power-manager --restart
+
+exec --no-startup-id easystroke
+exec --no-startup-id fcitx -d
+exec --no-startup-id gajim
+exec --no-startup-id nm-applet
+exec --no-startup-id numlockx on
+exec --no-startup-id sleep 10 && setxkbmap \`cat ~/.Xkbmap\`
+exec --no-startup-id xset r rate 250 50
+exec --no-startup-id xset s off
+
+# class                 border  backgr. text    indicator child_border
+client.focused          \$f_bg   \$f_bg   \$f_fg   \$f_bg     \$f_bg
+client.focused_inactive \$bg     \$bg     \$fg     \$bg       \$bg
+client.unfocused        \$bg     \$bg     \$fg     \$bg       \$bg
+client.urgent           \$u_bg   \$u_bg   \$u_fg   \$u_bg     \$w_bg
+client.placeholder      \$bg     \$bg     \$fg     \$bg       \$bg
+client.background       \$bg
+
+mode \$move {
+        bindsym Escape mode "default"
+
+        bindsym grave nop
+        bindsym 1 nop
+        bindsym 2 nop
+        bindsym 3 nop
+        bindsym 4 nop
+        bindsym 5 nop
+        bindsym 6 nop
+        bindsym 7 nop
+        bindsym 8 nop
+        bindsym 9 nop
+        bindsym 0 nop
+        bindsym minus nop
+        bindsym equal nop
+        bindsym BackSpace nop
+
+        bindsym Tab nop
+        bindsym q nop
+        bindsym w nop
+        bindsym e nop
+        bindsym t sticky toggle
+        bindsym y nop
+        bindsym u nop
+        bindsym i nop
+        bindsym o nop
+        bindsym p nop
+        bindsym bracketleft nop
+        bindsym bracketright nop
+        bindsym backslash nop
+
+        bindsym a nop
+        bindsym s nop
+        bindsym d nop
+        bindsym f nop
+        bindsym g nop
+        bindsym h move left 100 px
+        bindsym j move down 100 px
+        bindsym k move up 100 px
+        bindsym l move right 100 px
+        bindsym Return mode "default"
+
+        bindsym z nop
+        bindsym x nop
+        bindsym c nop
+        bindsym v nop
+        bindsym b exec --no-startup-id ~/.local/bin/i3-dynamic move-and-focus prev
+        bindsym n exec --no-startup-id ~/.local/bin/i3-dynamic move-and-focus next
+        bindsym m nop
+        bindsym comma nop
+        bindsym period nop
+        bindsym slash nop
+
+        bindsym space floating toggle
+        bindsym Left move left 100 px
+        bindsym Down move down 100 px
+        bindsym Up move up 100 px
+        bindsym Right move right 100 px
+
+$(configgen-modeless move | indent)
+
+        # Mouse buttons
+        bindsym --whole-window button1 mode "default"
+        bindsym --whole-window button2 \$button2_command
+}
+
+mode \$resize {
+        bindsym Escape mode "default"
+
+        bindsym grave nop
+        bindsym 1 nop
+        bindsym 2 nop
+        bindsym 3 nop
+        bindsym 4 nop
+        bindsym 5 nop
+        bindsym 6 nop
+        bindsym 7 nop
+        bindsym 8 nop
+        bindsym 9 nop
+        bindsym 0 nop
+        bindsym minus nop
+        bindsym equal nop
+        bindsym BackSpace nop
+
+        bindsym q nop
+        bindsym w nop
+        bindsym e nop
+        bindsym r nop
+        bindsym t nop
+        bindsym y nop
+        bindsym u nop
+        bindsym i nop
+        bindsym o nop
+        bindsym p nop
+
+        bindsym a nop
+        bindsym s nop
+        bindsym d nop
+        bindsym f nop
+        bindsym g nop
+        bindsym h resize shrink width 100 px or 10 ppt
+        bindsym j resize grow height 100 px or 10 ppt
+        bindsym k resize shrink height 100 px or 10 ppt
+        bindsym l resize grow width 100 px or 10 ppt
+        bindsym Return mode "default"
+
+        bindsym z nop
+        bindsym x nop
+        bindsym c nop
+        bindsym v nop
+        bindsym b nop
+        bindsym n nop
+        bindsym m nop
+        bindsym comma nop
+        bindsym period nop
+        bindsym slash nop
+
+        bindsym space nop
+        bindsym Left resize shrink width 100 px or 10 ppt
+        bindsym Down resize grow height 100 px or 10 ppt
+        bindsym Up resize shrink height 100 px or 10 ppt
+        bindsym Right resize grow width 100 px or 10 ppt
+
+$(configgen-modeless resize | indent)
+
+        # Mouse buttons
+        bindsym --whole-window button1 mode "default"
+        bindsym --whole-window button2 \$button2_command
+}
+
+$(configgen-modeless default)
+
+# Mouse buttons
+bindsym button2 \$button2_command
+EOF

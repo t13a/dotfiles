@@ -4,34 +4,21 @@ My personal dotfiles.
 
 ## Prerequisites
 
-- `bash`
 - `git`
+- `make`
 - `stow`
 
-## Usage
-
-### Bootstrap
+## Installation
 
 ```sh
-$ curl -L https://git.io/fAGDT | bash
+$ git clone https://github.com/t13a/dotfiles
+$ cd dotfiles
+$ make
 ```
 
-or
+## Development
 
-```sh
-$ curl -L https://raw.githubusercontent.com/t13a/dotfiles/master/bootstrap | bash
 ```
-
-### Push changes
-
-```sh
-$ dotfiles git add FILE...
-$ dotfiles git commit -m MESSAGE
-$ dotfiles git push origin
-```
-
-### Pull changes (experimental)
-
-```sh
-$ dotfiles sync
+$ docker build -t dotfiles .
+$ docker run -it --rm dotfiles
 ```

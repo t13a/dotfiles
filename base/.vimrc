@@ -9,7 +9,8 @@ Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'fatih/vim-go'
 Plugin 'google/vim-jsonnet'
 Plugin 'guns/xterm-color-table.vim'
-Plugin 'itchyny/vim-gitbranch' " for itchyny/lightline.vim
+Plugin 'itchyny/lightline.vim'
+Plugin 'itchyny/vim-gitbranch'
 Plugin 'jamessan/vim-gnupg'
 Plugin 'junegunn/fzf.vim'
 Plugin 'scrooloose/nerdcommenter'
@@ -20,20 +21,6 @@ Plugin 'tmux-plugins/vim-tmux-focus-events'
 Plugin 'tomasr/molokai'
 Plugin 'vim-scripts/fcitx.vim'
 Plugin 'w0rp/ale'
-if has('gui_running') || !empty($DISPLAY) && &t_Co >= 256
-    Plugin 'itchyny/lightline.vim'
-    let g:lightline = {
-        \ 'colorscheme': 'powerline',
-        \ 'active': {
-        \   'left': [ [ 'mode', 'paste' ],
-        \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-        \ },
-        \ 'component_function': {
-        \   'gitbranch': 'gitbranch#name'
-        \ },
-        \ }
-    set noshowmode " for lightline
-endif
 call vundle#end()
 filetype plugin indent on
 
@@ -56,6 +43,21 @@ if !has('nvim')
     set viminfo+=!
     set wildmenu
     syntax on
+endif
+
+" Lightline
+if has('gui_running') || !empty($DISPLAY) && &t_Co >= 256
+    let g:lightline = {
+        \ 'colorscheme': 'powerline',
+        \ 'active': {
+        \   'left': [ [ 'mode', 'paste' ],
+        \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+        \ },
+        \ 'component_function': {
+        \   'gitbranch': 'gitbranch#name'
+        \ },
+        \ }
+    set noshowmode
 endif
 
 " Color

@@ -1,0 +1,8 @@
+export EDITOR=vim
+export FZF_CTRL_R_OPTS="--height '80%' --reverse"
+export FZF_CTRL_T_COMMAND="fd --hidden --no-ignore --exclude='**/.git/**' --color=always"
+export FZF_CTRL_T_OPTS="--height '80%' --reverse --preview 'ls --color=always -dhl {}' --preview-window 'down:1' --ansi"
+export FZF_DEFAULT_OPTS=" --bind 'ctrl-s:toggle-sort' --bind 'ctrl-v:toggle-preview'"
+export GHQ_ROOT=$HOME/Documents
+export GPG_TTY=$(tty)
+export PATH=$HOME/.local/bin:$PATH
