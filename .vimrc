@@ -14,10 +14,12 @@ Plugin 'jamessan/vim-gnupg'
 Plugin 'junegunn/fzf.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
+Plugin 'tell-k/vim-autopep8'
 Plugin 'tpope/vim-surround'
 Plugin 'tmux-plugins/vim-tmux-focus-events'
 Plugin 'tomasr/molokai'
 Plugin 'vim-scripts/fcitx.vim'
+Plugin 'w0rp/ale'
 if has('gui_running') || !empty($DISPLAY) && &t_Co >= 256
     Plugin 'itchyny/lightline.vim'
     let g:lightline = {
@@ -143,6 +145,10 @@ vnoremap // y/\V<C-r>=escape(@",'/\')<CR><CR>
 map <C-n> :cnext<CR>
 map <C-m> :cprevious<CR>
 nnoremap <leader>a :cclose<CR>
+
+" Format Python
+let g:autopep8_disable_show_diff=1
+let g:autopep8_on_save = 1
 
 " Miscellaneous
 let g:GPGPreferArmor=1
