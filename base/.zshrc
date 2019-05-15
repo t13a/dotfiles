@@ -13,7 +13,7 @@ zplug "zsh-users/zsh-autosuggestions", defer:2 # after zsh-users/zsh-syntax-high
 zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-history-substring-search", defer:2 # after zsh-users/zsh-syntax-highlighting
 zplug "zsh-users/zsh-syntax-highlighting"
-zplug check || zplug install
+[[ $- =~ i ]] || zplug check --verbose || zplug install
 zplug load
 
 # zsh-history-substring-search
