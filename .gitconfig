@@ -3,6 +3,8 @@
 	email = tatsuya.kitagawa@t13a.com
 [gui]
 	spellingdictionary = none
+	fontui = -family \"Noto Sans CJK JP\" -size 10 -weight normal -slant roman -underline 0 -overstrike 0
+	fontdiff = -family \"Input Mono Narrow\" -size 10 -weight normal -slant roman -underline 0 -overstrike 0
 [core]
 	editor = vim
 	quotepath = off

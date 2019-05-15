@@ -30,7 +30,8 @@ then
     # Molokai for Vim
     if which tput > /dev/null
     then
-        tput initc 0 106 114 118
+        # tput initc 0 106 114 118
+        tput initc 0 494 557 569
         tput initc 1 976 149 447
         tput initc 2 651 886 180
         tput initc 3 957 749 459
