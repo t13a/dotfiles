@@ -25,12 +25,12 @@ endef
 define STOW
 	cd $(HOME) \
 	&& find $(DOTFILES_DIR)$(1) -name '.no-folding' \
-		| sed -E 's|^$(DOTFILES_DIR)$(1)/(.+)/.no-folding$$|\1|g' \
+		| sed -E 's|^$(DOTFILES_DIR)$(1)/(.+)/\.no-folding$$|\1|g' \
 		| xargs -r mkdir -pv
 	stow \
 		-d $(DOTFILES_DIR) \
 		-t $(HOME) \
-		-v --ignore='\.mkdir$$' \
+		-v --ignore='\.no-folding$$' \
 		$(STOW_EXTRA_OPTS) \
 		$(1)
 endef
