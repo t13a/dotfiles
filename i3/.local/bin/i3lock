@@ -1,0 +1,80 @@
+#!/bin/bash
+
+BG=222d32
+FG=cbd8dc
+FG_ALT=ffffff
+PRIMARY=00bcd4
+SECONDARY=2f3d44
+INFO=009688
+WARN=ff5252
+
+FONT='Noto Sans Medium'
+FONT_SIZE=36
+
+TIME_FONT='Noto Sans Medium'
+TIME_FONT_SIZE=72
+
+DATE_FONT='Noto Sans Light'
+DATE_FONT_SIZE=24
+
+CMD=/usr/bin/i3lock
+CMD_ARGS=(
+    "${CMD}"
+    --color=${BG}
+    # --show-failed-attempts
+    --indicator
+    --clock
+
+    # Inside color
+    --insidevercolor=${INFO}ff
+    --insidewrongcolor=${WARN}ff
+    --insidecolor=${BG}ff
+
+    # Ring color
+    --ringvercolor=${SECONDARY}ff
+    --ringwrongcolor=${SECONDARY}ff
+    --ringcolor=${SECONDARY}ff
+    --line-uses-inside
+
+    --keyhlcolor=${PRIMARY}ff
+    --bshlcolor=${SECONDARY}ff
+    --separatorcolor=${SECONDARY}ff
+
+    # Text color
+    --verifcolor=ffffffff
+    --wrongcolor=ffffffff
+    --layoutcolor=${FG}ff
+    --timecolor=${FG}ff
+    --datecolor=${FG}ff
+
+    # Font
+    --time-font="${TIME_FONT}"
+    --date-font="${DATE_FONT}"
+    --verif-font="${FONT}"
+    --wrong-font="${FONT}"
+
+    # Font size
+    --timesize=${TIME_FONT_SIZE}
+    --datesize=${DATE_FONT_SIZE}
+    --verifsize=${FONT_SIZE}
+    --wrongsize=${FONT_SIZE}
+
+    # Position
+    --timepos='ix:iy+0'
+    --datepos='tx:ty+60'
+
+    # Text
+    --datestr="%A, %B %-d %Y"
+    # --timestr="%H:%M"
+    --veriftext='Verifying...'
+    --wrongtext='Wrong!'
+    --noinputtext='No input'
+    --locktext='Locking...'
+
+    # Ring
+    --radius=200
+    --ring-width=20
+    --redraw-thread
+)
+
+"${CMD}" "${CMD_ARGS[@]}" "${@}" || "${CMD}" "${@}"

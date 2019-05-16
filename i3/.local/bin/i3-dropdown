@@ -1,0 +1,333 @@
+#!/bin/bash
+
+set -euo pipefail
+
+function calc_inner_rect() {
+    local var_prefix="${1}"
+    local position="${2}"
+    local width="${3}"
+    local height="${4}"
+    local outer_x="${5}"
+    local outer_y="${6}"
+    local outer_width="${7}"
+    local outer_height="${8}"
+
+    local inner_width="$(calc_length "${width}" "${outer_width}")"
+    local inner_height="$(calc_length "${height}" "${outer_height}")"
+
+    case "${position}" in
+        bottom)
+            local inner_x="$((${outer_x} + ((${outer_width} - ${inner_width}) / 2)))"
+            local inner_y="$((${outer_y} + ${outer_height} - ${inner_height}))"
+            ;;
+        top)
+            local inner_x="$((${outer_x} + ((${outer_width} - ${inner_width}) / 2)))"
+            local inner_y="${outer_y}"
+            ;;
+        *)
+            echo "${position}: invalid position" >&2
+            return 1
+            ;;
+    esac
+
+    cat << EOF
+local ${var_prefix}_x=${inner_x}
+local ${var_prefix}_y=${inner_y}
+local ${var_prefix}_width=${inner_width}
+local ${var_prefix}_height=${inner_height}
+EOF
+}
+
+function calc_length() {
+    if [[ ${1} =~ %$ ]]
+    then
+        echo "$((${2} * ${1%\%} / 100))"
+    else
+        echo "${1}"
+    fi
+}
+
+function calc_dropdown_rect() {
+    eval "$(get_outputs | jq -r '.[] | select(.primary).rect | "
+local primary_output_x=\(.x)
+local primary_output_y=\(.y)
+local primary_output_width=\(.width)
+local primary_output_height=\(.height)
+"')"
+
+    eval "$(
+        calc_outer_rect \
+        dropdown_max \
+        "${primary_output_x}" \
+        "${primary_output_y}" \
+        "${primary_output_width}" \
+        "${primary_output_height}" \
+        "${MARGINS[top]}" \
+        "${MARGINS[bottom]}" \
+        "${MARGINS[left]}" \
+        "${MARGINS[right]}"
+    )"
+
+    local size_index=0
+
+    if [ -n "$(get_dropdown_con_id)" ]
+    then
+        eval "$(get_dropdown | jq -r '"
+local current_width=\(.rect.width)
+local current_height=\(.rect.height)
+"')"
+
+        local index
+        for index in $(seq 0 $((${#SIZES[@]} - 1)))
+        do
+            local size_width="$(calc_length "${SIZES[${index}]%x*}" "${dropdown_max_width}")"
+            local size_height="$(calc_length "${SIZES[${index}]#*x}" "${dropdown_max_height}")"
+
+            if [ ${current_width} -eq ${size_width} -a ${current_height} -eq ${size_height} ]
+            then
+                if [ ${index} -lt ${#SIZES[@]} ]
+                then
+                    size_index=$((${index} + 1))
+                else
+                    size_index=0
+                fi
+                break
+            fi
+        done
+    fi
+
+    local dropdown_width="${SIZES[${size_index}]%x*}"
+    local dropdown_height="${SIZES[${size_index}]#*x}"
+
+    calc_inner_rect \
+    dropdown \
+    "${POSITION}" \
+    "${dropdown_width}" \
+    "${dropdown_height}" \
+    "${dropdown_max_x}" \
+    "${dropdown_max_y}" \
+    "${dropdown_max_width}" \
+    "${dropdown_max_height}"
+}
+
+function calc_outer_rect() {
+    local var_prefix="${1}"
+    local x="${2}"
+    local y="${3}"
+    local width="${4}"
+    local height="${5}"
+    local margin_top="${6}"
+    local margin_bottom="${7}"
+    local margin_left="${8}"
+    local margin_right="${9}"
+
+    local y=$((
+        ${y}
+        + $(calc_length "${margin_top}" "${height}")
+    ))
+    local height=$((
+        ${height}
+        - $(calc_length "${margin_top}" "${height}")
+        - $(calc_length "${margin_bottom}" "${height}")
+    ))
+    local x=$((
+        ${x}
+        + $(calc_length "${margin_left}" "${width}")
+    ))
+    local width=$((
+        ${width}
+        - $(calc_length "${margin_left}" "${width}")
+        - $(calc_length "${margin_right}" "${width}")
+    ))
+
+    cat << EOF
+local ${var_prefix}_x=${x}
+local ${var_prefix}_y=${y}
+local ${var_prefix}_width=${width}
+local ${var_prefix}_height=${height}
+EOF
+}
+
+function cmd_calc() {
+    "calc_${1//-/_}" "${@:2}"
+}
+
+function cmd_get() {
+    "get_${1//-/_}" "${@:2}"
+}
+
+function cmd_kill() {
+    local con_id
+    get_dropdowns | jq -r '.[] | .id' | while read con_id
+    do
+        run_or_dryrun i3-msg -t run_command "[con_id=\"${con_id}\"]" kill
+    done
+}
+
+function cmd_resize() {
+    local con_id="$(get_dropdown_con_id)"
+
+    eval "$(calc_dropdown_rect)"
+
+    run_or_dryrun i3-msg -t run_command "[con_id=\"${con_id}\"]" \
+    move position "${dropdown_x}" px "${dropdown_y}" px, \
+    resize set width "${dropdown_width}" px height "${dropdown_height}" px
+}
+
+function cmd_show() {
+    local con_id="$(get_dropdown_con_id)"
+
+    if [ -n "${con_id}" ]
+    then
+        cmd_resize
+        # run_or_dryrun i3-msg -t run_command "[window_role=\"${ROLE}\"]" scratchpad show
+    else
+        run_or_dryrun ${COMMAND}
+    fi
+}
+
+function get_dropdown() {
+    function f() {
+        get_dropdowns | jq 'if length == 1 then .[0] else null end'
+    }
+    memo dropdown f
+}
+
+function get_dropdowns() {
+    function f() {
+        get_tree | jq \
+        --arg class "${CLASS}" \
+        --arg role "${ROLE}" \
+        --arg title "${TITLE}" \
+        '[
+            recurse(.floating_nodes[], .nodes[]) | select(
+                ($class == "" or .window_properties.class == $class)
+                and ($role == "" or .window_properties.window_role == $role)
+                and ($title == "" or .window_properties.title == $title)
+            )
+        ]'
+    }
+    memo dropdowns f
+}
+
+function get_dropdown_con_id() {
+    function f() {
+        get_dropdown | jq -r 'objects | .id'
+    }
+    memo dropdown_con_id f
+}
+
+function get_outputs() {
+    memo outputs i3-msg -t get_outputs
+}
+
+function get_tree() {
+    memo tree i3-msg -t get_tree
+}
+
+function help() {
+    cat << EOF
+${0} [OPTION]... {toggle|resize}
+
+Execute options:
+    -x COMMAND  specify command
+
+Criteria options:
+    -c CLASS    specify window class
+    -r ROLE     specify window role
+    -t TITLE    specify window title
+
+Layout options:
+    -m MARGINS  specify margins ({top},{bottom},{left},{right})
+    -p POSITION specify position ({top|bottom})
+    -s SIZES    specify sizes ({width}x{height},[{width}x{height}]...)
+
+Miscellaneous options:
+    -h              show help
+    -n              dry-run
+
+Example:
+    ${0} \\
+    -x 'gnome-terminal --role i3-dropdown-terminal' \\
+    -c Gnome-terminal \\
+    -r i3-dropdown-terminal \\
+    toggle
+EOF
+}
+
+function memo() {
+    if [ ${#@} -ge 2 -a -z "${MEMOS[${1}]:-}" ]
+    then
+        MEMOS[${1}]="$("${@:2}")"
+    fi
+
+    echo "${MEMOS[${1}]}"
+}
+
+function run_or_dryrun() {
+    if [ -z "${DRYRUN}" ]
+    then
+        "${@}"
+    else
+        echo "DRYRUN: ${@}" >&2
+    fi
+}
+
+declare -A MEMOS
+declare -A MARGINS
+
+unset COMMAND
+
+CLASS=
+DRYRUN=
+MARGINS=([top]=0 [bottom]=0 [left]=0 [right]=0)
+POSITION=top
+ROLE=
+SIZES=('100%x25%' '100%x50%' '100%x100%')
+TITLE=
+
+while getopts 'c:hm:np:r:s:t:x:' OPT
+do
+    case "${OPT}" in
+        c)
+            CLASS="${OPTARG}"
+            ;;
+        h)
+            help
+            exit
+            ;;
+        m)
+            MARGINS=(
+                [top]="$(echo "${OPTARG}" | cut -d, -f1)"
+                [bottom]="$(echo "${OPTARG}" | cut -d, -f2)"
+                [left]="$(echo "${OPTARG}" | cut -d, -f3)"
+                [right]="$(echo "${OPTARG}" | cut -d, -f4)"
+            )
+            ;;
+        n)
+            DRYRUN=yes
+            ;;
+        p)
+            POSITION="${OPTARG}"
+            ;;
+        r)
+            ROLE="${OPTARG}"
+            ;;
+        s)
+            SIZES=($(echo "${OPTARG}" | tr , '\n'))
+            ;;
+        t)
+            TITLE="${OPTARG}"
+            ;;
+        x)
+            COMMAND="${OPTARG}"
+            ;;
+        *)
+            exit 1
+            ;;
+    esac
+done
+
+shift $((${OPTIND} - 1))
+
+"cmd_${1//-/_}" "${@:2}"

@@ -1,0 +1,132 @@
+#!/bin/bash
+
+set -euo pipefail
+
+function cmd_move_and_focus() {
+    local ws_num="$(get_ws_num "${1}")"
+    local con_id="$(get_focused_con_id)"
+    run_or_dryrun i3-msg "move container to workspace number ${ws_num}, workspace number ${ws_num}, [con_id=${con_id}] focus"
+}
+
+function cmd_workspace() {
+    local ws_num="$(get_ws_num "${1}")"
+    run_or_dryrun i3-msg "workspace number ${ws_num}"
+}
+
+function help() {
+    cat << EOF
+${0} [OPTION]...
+${0} [OPTION]... move-and-focus {next|prev}
+${0} [OPTION]... workspace {next|prev}
+
+Options:
+    -h  show help
+    -n  dry-run
+EOF
+}
+
+function get_first_ws_num() {
+    [ -n "${FIRST_WS_NUM:-}" ] || FIRST_WS_NUM="$(get_ws_nums | head -n 1)"
+    echo "${FIRST_WS_NUM}"
+}
+
+function get_focused_con_id() {
+    [ -n "${FOCUSED_CON_ID:-}" ] || FOCUSED_CON_ID="$(get_tree | jq -r 'recurse(.nodes[]) | select(.focused).id')"
+    echo "${FOCUSED_CON_ID}"
+}
+
+function get_focused_ws_num() {
+    [ -n "${FOCUSED_WS_NUM:-}" ] || FOCUSED_WS_NUM="$(get_workspaces | jq -r 'map(select(.focused).num)[] | numbers')"
+    echo "${FOCUSED_WS_NUM}"
+}
+
+function get_last_ws_num() {
+    [ -n "${LAST_WS_NUM:-}" ] || LAST_WS_NUM="$(get_ws_nums | tail -n 1)"
+    echo "${LAST_WS_NUM}"
+}
+
+function get_next_ws_num() {
+    if [ $(get_focused_ws_num) -eq $(get_last_ws_num) ] && [ -n "$(is_focused_ws_empty)" ]
+    then
+        NEXT_WS_NUM="$(get_focused_ws_num)"
+    else
+        NEXT_WS_NUM="$(($(get_focused_ws_num) + 1))"
+    fi
+    echo "${NEXT_WS_NUM}"
+}
+
+function get_prev_ws_num() {
+    if [ $(get_focused_ws_num) -eq $(get_first_ws_num) ]
+    then
+        PREV_WS_NUM="$(get_focused_ws_num)"
+    else
+        PREV_WS_NUM="$(($(get_focused_ws_num) - 1))"
+    fi
+    echo "${PREV_WS_NUM}"
+}
+
+function get_ws_num() {
+    case "${1}" in
+        next)
+            get_next_ws_num
+            ;;
+        prev)
+            get_prev_ws_num
+            ;;
+        *)
+            echo "${1}: invalid argument" >&2
+            return 1
+            ;;
+    esac
+}
+
+function get_ws_nums() {
+    [ -n "${WS_NUMS:-}" ] || WS_NUMS="$(get_workspaces | jq -r '.[] | .num')"
+    echo "${WS_NUMS}"
+}
+
+function get_tree() {
+    [ -n "${TREE:-}" ] || TREE="$(i3-msg -t get_tree)"
+    echo "${TREE}"
+}
+
+function get_workspaces() {
+    [ -n "${WORKSPACES:-}" ] || WORKSPACES="$(i3-msg -t get_workspaces)"
+    echo "${WORKSPACES}"
+}
+
+function is_focused_ws_empty() {
+    [ -n "${FOCUSED_WS_EMPTY:-}" ] || FOCUSED_WS_EMPTY="$(get_tree | jq -r --arg ws_num "$(get_focused_ws_num)" 'recurse(.nodes[]) | select(.num == ($ws_num | tonumber)) | [ recurse(.nodes[]) | select(.window) ] | if length == 0 then "yes" else "" end')"
+    echo "${FOCUSED_WS_EMPTY}"
+}
+
+function run_or_dryrun() {
+    if [ -z "${DRYRUN}" ]
+    then
+        "${@}"
+    else
+        echo "DRYRUN: ${@}" >&2
+    fi
+}
+
+DRYRUN=
+
+while getopts 'hn' OPT
+do
+    case "${OPT}" in
+        h)
+            help
+            exit
+            ;;
+        n)
+            DRYRUN=yes
+            ;;
+        *)
+            exit 1
+            ;;
+    esac
+done
+
+shift $((${OPTIND} - 1))
+
+"cmd_${1//-/_}" "${@:2}"

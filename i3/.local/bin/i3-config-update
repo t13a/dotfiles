@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -euo pipefail
+
+function on_failure() {
+    i3-nagbar \
+    -t error \
+    -m 'Failed to generate i3 configuration' \
+    -b 'Show error' "cat '${ERR}' | ${PAGER:-less}"
+}
+
+DIR="${HOME}/.config/i3"
+GEN="${DIR}/configgen"
+OUT="${DIR}/config"
+ERR="${GEN}.log"
+
+exec 2> "${ERR}"
+trap on_failure INT TERM
+
+"${GEN}" > "${OUT}"
