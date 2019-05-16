@@ -24,8 +24,8 @@ endef
 
 define STOW
 	cd $(HOME) \
-	&& find $(DOTFILES_DIR)$(1) -name '.mkdir' \
-		| sed -E 's|^$(DOTFILES_DIR)$(1)/(.+)/.mkdir$$|\1|g' \
+	&& find $(DOTFILES_DIR)$(1) -name '.no-folding' \
+		| sed -E 's|^$(DOTFILES_DIR)$(1)/(.+)/.no-folding$$|\1|g' \
 		| xargs -r mkdir -pv
 	stow \
 		-d $(DOTFILES_DIR) \
