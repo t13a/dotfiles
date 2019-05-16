@@ -1,4 +1,8 @@
+DEFAULT_DEPS        = base tpm vundle zplug
+
 DOTFILES_DIR        = $(dir $(abspath $(firstword $(MAKEFILE_LIST))))
+DOTFILES_MKDIR_DIRS = find $(DOTFILES_DIR)$(1) -name '.mkdir' | sed -E 's|^$(DOTFILES_DIR)$(1)/(.+)/.mkdir$$|\1|g'
+DOTFILES_STOW       = stow -d $(DOTFILES_DIR) -t $(HOME) -v --ignore='\.mkdir$$' --override='.*'
 
 TMUX_CONF           = $(HOME)/.tmux.conf
 
@@ -17,10 +21,9 @@ ZPLUG_DIR           = $(HOME)/.zplug
 
 ZSH_RC              = $(HOME)/.zshrc
 
-define GIT
+define PULL_OR_CLONE
 	mkdir -pv $(3)
-	if [ -d $(3)/.git ]; \
-	then \
+	if [ -d $(3)/.git ]; then \
 		cd $(3); \
 		git pull; \
 	else \
@@ -29,12 +32,21 @@ define GIT
 endef
 
 define STOW
-	find $(DOTFILES_DIR)$(1) -name '.nostow' | sed -E 's|^$(DOTFILES_DIR)$(1)/(.+)/.nostow$$|\1|g' | xargs -r mkdir -pv
-	stow --dir=$(DOTFILES_DIR) --target=$(HOME) --verbose --override='.*' $(1)
+	cd $(HOME) && $(call DOTFILES_MKDIR_DIRS,$(1)) | xargs -r mkdir -pv
+	$(DOTFILES_STOW) $(1)
+endef
+
+define UNSTOW
+	$(DOTFILES_STOW) -D $(1)
+	cd $(HOME) && $(call DOTFILES_MKDIR_DIRS,$(1)) | sort -r | (\
+		while read DIR; do \
+			[ -d $${DIR} ] && echo $${DIR}; \
+		done \
+	) | xargs -r rmdir --ignore-fail-on-non-empty -v
 endef
 
 .PHONY: default
-default: base tpm vundle zplug
+default: $(DEFAULT_DEPS)
 
 .PHONY: base
 base:
@@ -42,19 +54,42 @@ base:
 
 .PHONY: i3
 i3:
-	$(call STOW,base)
+	$(call STOW,i3)
 
 .PHONY: tpm
 tpm: base
-	$(call GIT,$(TPM_REPO),$(TPM_BRANCH),$(TPM_DIR))
+	$(call PULL_OR_CLONE,$(TPM_REPO),$(TPM_BRANCH),$(TPM_DIR))
 	tmux start-server \; source $(TMUX_CONF) \; run-shell $(TPM_INSTALL_PLUGINS)
 
 .PHONY: vundle
 vundle: base
-	$(call GIT,$(VUNDLE_REPO),$(VUNDLE_BRANCH),$(VUNDLE_DIR))
+	$(call PULL_OR_CLONE,$(VUNDLE_REPO),$(VUNDLE_BRANCH),$(VUNDLE_DIR))
 	vim -c VundleInstall -c exit -c exit
 
 .PHONY: zplug
 zplug: base
-	$(call GIT,$(ZPLUG_REPO),$(ZPLUG_BRANCH),$(ZPLUG_DIR))
+	$(call PULL_OR_CLONE,$(ZPLUG_REPO),$(ZPLUG_BRANCH),$(ZPLUG_DIR))
 	zsh -c 'source $(ZSH_RC)'
+
+.PHONY: clean-default
+clean: $(addprefix clean-, $(DEFAULT_DEPS))
+
+.PHONY: clean-base
+clean-base:
+	$(call UNSTOW,base)
+
+.PHONY: clean-i3
+clean-i3:
+	$(call UNSTOW,i3)
+
+.PHONY: clean-tpm
+clean-tpm:
+	rm -rfv $(TPM_DIR)
+
+.PHONY: clean-vundle
+clean-vundle:
+	rm -rfv $(VUNDLE_DIR)
+
+.PHONY: clean-zplug
+clean-zplug:
+	rm -rfv $(ZPLUG_DIR)
