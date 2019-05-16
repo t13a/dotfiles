@@ -1,0 +1,56 @@
+#!/bin/bash
+
+set -euo pipefail
+
+FACTOR_SCHEME=org.gnome.desktop.a11y.magnifier
+FACTOR_KEY=mag-factor
+FACTORS=(
+    '1.5'
+    '1.75'
+    '2.0'
+)
+
+function factor() {
+    local factor="$(gsettings get "${FACTOR_SCHEME}" "${FACTOR_KEY}" | tr -d \')"
+
+    if [ $# -eq 0 ]
+    then
+        echo "${factor}"
+    else
+        gsettings set "${FACTOR_SCHEME}" "${FACTOR_KEY}" "${1}"
+    fi
+}
+
+function factor_index() {
+    local index
+
+    for index in $(seq 0 "$((${#FACTORS[@]} - 1))")
+    do
+        if [ "${FACTORS[${index}]}" = "${1}" ]
+        then
+            echo ${index}
+            return
+        fi
+    done
+
+    echo -1
+}
+
+function factor_next() {
+    local index
+
+    if [ $1 -lt $((${#FACTORS[@]} - 1)) ]
+    then
+        index=$(($1 + 1))
+    else
+        index=0
+    fi
+
+    echo "${FACTORS[${index}]}"
+}
+
+FACTOR="$(factor)"
+FACTOR_INDEX="$(factor_index ${FACTOR})"
+FACTOR_NEXT="$(factor_next ${FACTOR_INDEX})"
+
+factor "${FACTOR_NEXT}"

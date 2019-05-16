@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+source $HOME/.zshrc
+
+exec tmux -2 new

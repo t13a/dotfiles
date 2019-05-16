@@ -1,0 +1,56 @@
+#!/bin/bash
+
+set -euo pipefail
+
+SIZE_SCHEME=org.zzrough.gs-extensions.drop-down-terminal
+SIZE_KEY=terminal-size
+SIZES=(
+    '306px' # ~33%: 16 lines
+    '610px' # ~66%: 32 lines
+    '1047px' # 100%
+)
+
+function size() {
+    local size="$(gsettings get "${SIZE_SCHEME}" "${SIZE_KEY}" | tr -d \')"
+
+    if [ $# -eq 0 ]
+    then
+        echo "${size}"
+    else
+        gsettings set "${SIZE_SCHEME}" "${SIZE_KEY}" "${1}"
+    fi
+}
+
+function size_index() {
+    local index
+
+    for index in $(seq 0 "$((${#SIZES[@]} - 1))")
+    do
+        if [ "${SIZES[${index}]}" = "${1}" ]
+        then
+            echo ${index}
+            return
+        fi
+    done
+
+    echo -1
+}
+
+function size_next() {
+    local index
+
+    if [ $1 -lt $((${#SIZES[@]} - 1)) ]
+    then
+        index=$(($1 + 1))
+    else
+        index=0
+    fi
+
+    echo "${SIZES[${index}]}"
+}
+
+SIZE="$(size)"
+SIZE_INDEX="$(size_index ${SIZE})"
+SIZE_NEXT="$(size_next ${SIZE_INDEX})"
+
+size "${SIZE_NEXT}"

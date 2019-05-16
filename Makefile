@@ -42,6 +42,10 @@ default: base tpm vundle zplug
 base:
 	$(call STOW,base)
 
+.PHONY: gnome
+gnome:
+	$(call STOW,gnome)
+
 .PHONY: i3
 i3:
 	$(call STOW,i3)

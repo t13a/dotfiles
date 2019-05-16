@@ -1,0 +1,29 @@
+#!/bin/sh
+
+HOTKEY=$1
+PID=$(xdotool getwindowfocus getwindowpid)
+BASENAME="$(basename $(realpath /proc/$PID/exe))"
+
+case "$HOTKEY" in
+    next-tab)
+        case "$BASENAME" in
+            gedit|nautilus)
+                xdotool key ctrl+alt+Next
+                ;;
+            *)
+                xdotool key ctrl+Next
+                ;;
+        esac
+        ;;
+    previous-tab)
+        case "$BASENAME" in
+            gedit|nautilus)
+                xdotool key ctrl+alt+Prior
+                ;;
+            *)
+                xdotool key ctrl+Prior
+                ;;
+        esac
+        ;;
+esac
+
