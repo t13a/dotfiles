@@ -16,6 +16,14 @@ $ cd dotfiles
 $ make
 ```
 
+## Hacks
+
+### Delete stowed package
+
+```sh
+$ make -e STOW_EXTRA_OPTS='--no-folding -D' PACKAGE...
+```
+
 ## Development
 
 ```
