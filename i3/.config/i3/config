@@ -168,7 +168,7 @@ mode $move {
         bindsym Ctrl+Mod1+r restart
         bindsym Ctrl+Mod1+u exec --no-startup-id ~/.local/bin/i3-config-update
         bindsym Ctrl+Mod1+c reload
-        bindsym Ctrl+Mod1+space exec --no-startup-id ~/.local/share/synaptics-one-finger/synaptics-one-finger -t
+        bindsym Ctrl+Mod1+space exec --no-startup-id ~/.local/lib/synaptics-one-finger/synaptics-one-finger -t
 
         # Super
         # bindcode --release $superlcode exec --no-startup-id rofi -show drun
@@ -316,7 +316,7 @@ mode $resize {
         bindsym Ctrl+Mod1+r restart
         bindsym Ctrl+Mod1+u exec --no-startup-id ~/.local/bin/i3-config-update
         bindsym Ctrl+Mod1+c reload
-        bindsym Ctrl+Mod1+space exec --no-startup-id ~/.local/share/synaptics-one-finger/synaptics-one-finger -t
+        bindsym Ctrl+Mod1+space exec --no-startup-id ~/.local/lib/synaptics-one-finger/synaptics-one-finger -t
 
         # Super
         # bindcode --release $superlcode exec --no-startup-id rofi -show drun
@@ -407,7 +407,7 @@ bindsym Ctrl+Mod1+BackSpace exec --no-startup-id i3-nagbar \
 bindsym Ctrl+Mod1+r restart
 bindsym Ctrl+Mod1+u exec --no-startup-id ~/.local/bin/i3-config-update
 bindsym Ctrl+Mod1+c reload
-bindsym Ctrl+Mod1+space exec --no-startup-id ~/.local/share/synaptics-one-finger/synaptics-one-finger -t
+bindsym Ctrl+Mod1+space exec --no-startup-id ~/.local/lib/synaptics-one-finger/synaptics-one-finger -t
 
 # Super
 # bindcode --release $superlcode exec --no-startup-id rofi -show drun
