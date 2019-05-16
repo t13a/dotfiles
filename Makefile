@@ -1,4 +1,4 @@
-DOTFILES_DIR  = $(dir $(abspath $(firstword $(MAKEFILE_LIST))))
+STOW_DIR  = $(dir $(abspath $(firstword $(MAKEFILE_LIST))))
 
 TPM_REPO      = https://github.com/tmux-plugins/tpm
 TPM_BRANCH    = master
@@ -24,11 +24,11 @@ endef
 
 define STOW
 	cd $(HOME) \
-	&& find $(DOTFILES_DIR)$(1) -name '.no-folding' \
-		| sed -E 's|^$(DOTFILES_DIR)$(1)/(.+)/\.no-folding$$|\1|g' \
+	&& find $(STOW_DIR)$(1) -name '.no-folding' \
+		| sed -E 's|^$(STOW_DIR)$(1)/(.+)/\.no-folding$$|\1|g' \
 		| xargs -r mkdir -pv
 	stow \
-		-d $(DOTFILES_DIR) \
+		-d $(STOW_DIR) \
 		-t $(HOME) \
 		-v --ignore='\.no-folding$$' \
 		$(STOW_EXTRA_OPTS) \
