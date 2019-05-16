@@ -160,7 +160,8 @@ map <Leader>nb :NERDTreeFromBookmark
 map <Leader>nf :NERDTreeFind<CR>
 map <Leader>nn :NERDTreeToggle<CR>
 set ambiwidth=double
-set listchars=eol:$,tab:>-
+set list
+set listchars=tab:>-
 set nobackup
 set nojoinspaces
 set noswapfile
