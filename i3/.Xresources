@@ -1,0 +1,43 @@
+t13a.bg: #222d32
+t13a.fg: #b9c3c8
+t13a.primary_bg: #00bcd4
+t13a.primary_fg: #ffffff
+t13a.secondary_bg: #2f3d44
+t13a.secondary_fg: #cbd8dc
+t13a.info_bg: #009688
+t13a.info_fg: #ffffff
+t13a.warn_bg: #ff5252
+t13a.warn_fg: #ffffff
+
+Xft.dpi: 96
+Xft.antialias: 1
+Xft.hinting: 1
+Xft.hintstyle: hintfull
+Xft.rgba: rgb
+
+xterm.faceName: Input Mono Narrow Regular
+xterm.faceSize: 12
+
+URxvt.depth: 32
+! URxvt.transparent: True
+! URxvt.background: Black
+! URxvt.background: rgba:0000/2b00/3600/dddd
+URxvt.background: rgba:2700/2800/2200/dd00
+URxvt.foreground: White
+URxvt.font: xft:Input Mono Narrow Regular:size=12
+! URxvt.iconName: terminal
+URxvt.scrollBar: False
+! URxvt.scrollTtyOutput: False
+! URxvt.scrollTtyKeypress: True
+URxvt.saveLines: 65535
+URxvt.termName: screen-256color
+! URxvt.lineSpace: 0
+URxvt.letterSpace: -5
+URxvt.cursorBlink: True
+URxvt.preeditType: OverTheSpot
+URxvt.inputMethod: fcitx
+URxvt.keysym.C-S-0x43: eval:selection_to_clipboard
+URxvt.keysym.C-S-0x56: eval:paste_clipboard
+URxvt.perl-ext: xim-onthespot
+URxvt.iso14755: False
+URxvt.iso14755_52: False
