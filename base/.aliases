@@ -1,3 +1,4 @@
+alias dotfiles="make -f $(dirname $(dirname $(realpath ~/.zshrc)))/Makefile"
 alias g="git"
 alias gg="git gui"
 alias gk="gitk --all"
