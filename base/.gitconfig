@@ -1,6 +1,8 @@
 [user]
 	name = Tatsuya Kitagawa
 	email = tatsuya.kitagawa@t13a.com
+[ghq]
+	root = ~/Documents
 [gui]
 	spellingdictionary = none
 	fontui = -family \"Noto Sans CJK JP\" -size 10 -weight normal -slant roman -underline 0 -overstrike 0
@@ -15,7 +17,9 @@
 	co = checkout
 	d = diff
 	l = log
-	r = reset
+	m = merge
+	rb = rebase
+	rs = reset
 	s = status
 	t = tag
 	y = stash
