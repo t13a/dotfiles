@@ -16,7 +16,11 @@ ZPLUG_DIR     = $(HOME)/.zplug
 ZPLUG_REPO    = https://github.com/zplug/zplug
 
 .PHONY: default
-default: base tmux vim zsh
+default: base ranger tmux vim zsh
+
+.PHONY: ranger
+ranger: base
+	ranger --copy-config=all
 
 .PHONY: tmux
 tmux: base tpm
