@@ -1,6 +1,3 @@
-alias dotfiles-make="make -f $(dirname $(dirname $(realpath ~/.aliases)))/Makefile"
-alias dotfiles-make-delete="dotfiles -e STOW_EXTRA_OPTS='--no-folding -D'"
-
 alias g="git"
 alias gg="git gui"
 alias gk="gitk --all"

@@ -18,10 +18,10 @@ $ make
 
 ## Hacks
 
-### Delete stowed package
+### Delete stowed packages
 
 ```sh
-$ make -e STOW_EXTRA_OPTS='--no-folding -D' PACKAGE...
+$ make unstow-<package>...
 ```
 
 ## Development
