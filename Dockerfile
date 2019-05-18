@@ -24,10 +24,9 @@ WORKDIR /home/arch
 
 COPY --chown=arch:arch / dotfiles
 
-ARG MAKE_EXTRA_OPTS=
-ARG MAKE_TARGETS=
+ARG MAKE_EXTRA_ARGS=
 
-RUN sudo -u arch make -f dotfiles/Makefile ${MAKE_EXTRA_OPTS} ${MAKE_TARGETS}
+RUN sudo -u arch make -f dotfiles/Makefile ${MAKE_EXTRA_ARGS}
 
 USER arch
 
