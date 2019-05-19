@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -euo pipefail
+
+dbus-monitor --system "type='signal',interface='org.freedesktop.login1.Manager',member=PrepareForSleep" \
+| while read LINE
+do
+    case "${LINE}" in
+        *"boolean false"*)
+            systemctl --user --no-block stop sleep.target
+            ;;
+        *"boolean true"*)
+            systemctl --user --no-block start sleep.target
+            ;;
+    esac
+done

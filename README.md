@@ -30,3 +30,7 @@ $ make unstow-<package>...
 $ docker build -t dotfiles .
 $ docker run -it --rm dotfiles
 ```
+
+## References
+
+- [Systemd sleep.target for user level](https://medium.com/@aiguofer/systemd-sleep-target-for-user-level-10eb003b3bfd)

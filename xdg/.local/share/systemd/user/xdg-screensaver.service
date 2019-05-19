@@ -3,9 +3,8 @@ Description=Lock before sleep
 Before=sleep.target
 
 [Service]
-Type=forking
-Environment=DISPLAY=:0
-ExecStart=%h/.local/bin/i3lock
+Type=oneshot
+ExecStart=/usr/bin/xdg-screensaver lock
 
 [Install]
 WantedBy=sleep.target

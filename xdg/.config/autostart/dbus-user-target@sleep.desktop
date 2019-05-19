@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Dbus user target for sleep
+Exec=bash -c '~/.local/bin/dbus-user-target@sleep'
+X-GNOME-Autostart-enabled=true
